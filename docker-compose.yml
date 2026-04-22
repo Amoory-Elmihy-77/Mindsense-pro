@@ -1,0 +1,36 @@
+services:
+  ai:
+    build:
+      context: ./ai
+    container_name: mindsense-ai
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./ai/.env
+    restart: unless-stopped
+
+  back:
+    build:
+      context: ./back
+    container_name: mindsense-back
+    ports:
+      - "5020:5020"
+    env_file:
+      - ./back/.env
+    environment:
+      AI_BASE_URL: http://ai:8000
+    depends_on:
+      - ai
+    restart: unless-stopped
+
+  front:
+    build:
+      context: ./front
+      args:
+        VITE_API_BASE_URL: http://localhost:5020/api
+    container_name: mindsense-front
+    ports:
+      - "3000:80"
+    depends_on:
+      - back
+    restart: unless-stopped

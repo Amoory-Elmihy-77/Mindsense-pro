@@ -1,0 +1,209 @@
+/* Sidebar */
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 280px;
+  border-radius: 0;
+  border-top: none;
+  border-bottom: none;
+  border-left: none;
+  border-right: 1px solid rgba(255,255,255,0.05);
+  background: rgba(10, 10, 10, 0.4);
+  padding: 2rem 1.5rem;
+  flex-shrink: 0;
+  transform: none; /* override hover from glass-panel */
+}
+.sidebar:hover {
+  transform: none;
+  box-shadow: none;
+  border-color: rgba(255,255,255,0.05);
+}
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0 0.5rem 2.5rem 0.5rem;
+  color: var(--accent-primary);
+}
+
+.sidebar-header h2 {
+  font-size: 1.4rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #fff, #999);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: -0.02em;
+}
+
+.sidebar-logo {
+  filter: drop-shadow(0 0 10px rgba(139, 92, 246, 0.6));
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  font-weight: 500;
+  font-size: 0.95rem;
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.nav-item::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; height: 100%; width: 4px;
+  background: var(--accent-primary);
+  transform: scaleY(0);
+  transition: var(--transition);
+  border-radius: 0 4px 4px 0;
+}
+
+.nav-item:hover {
+  background: var(--bg-glass-hover);
+  color: var(--text-primary);
+}
+
+.nav-item.active {
+  background: linear-gradient(90deg, rgba(139, 92, 246, 0.15), transparent);
+  color: white;
+}
+
+.nav-item.active::before {
+  transform: scaleY(1);
+}
+
+.sidebar-footer {
+  margin-top: auto;
+  padding-top: 1rem;
+}
+
+.text-error {
+  color: var(--error);
+}
+
+.text-error:hover {
+  background: rgba(244, 63, 94, 0.1) !important;
+  color: var(--error) !important;
+}
+
+/* Topbar */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 3rem;
+  border-radius: 0;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  background: rgba(5, 5, 5, 0.6);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  transform: none;
+}
+
+.topbar:hover {
+  transform: none;
+  border-color: rgba(255,255,255,0.05);
+  box-shadow: none;
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 0.6rem 1.25rem;
+  border-radius: var(--radius-full);
+  width: 350px;
+  border: 1px solid rgba(255,255,255,0.05);
+  transition: var(--transition);
+}
+
+.search-bar:focus-within {
+  background: rgba(255,255,255,0.06);
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
+}
+
+.search-input {
+  background: none;
+  border: none;
+  color: white;
+  width: 100%;
+  outline: none;
+  font-size: 0.95rem;
+}
+
+.icon-btn {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.05);
+  color: var(--text-secondary);
+  cursor: pointer;
+  position: relative;
+  padding: 0.6rem;
+  border-radius: 50%;
+  transition: var(--transition);
+}
+
+.icon-btn:hover {
+  background: rgba(255,255,255,0.1);
+  color: white;
+  transform: translateY(-2px);
+}
+
+.badge {
+  position: absolute;
+  top: 0px;
+  right: 2px;
+  width: 10px;
+  height: 10px;
+  background: var(--error);
+  border-radius: 50%;
+  border: 2px solid var(--bg-primary);
+  box-shadow: 0 0 8px var(--error);
+}
+
+.avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: white;
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+  border: 2px solid rgba(255,255,255,0.1);
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-name {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
