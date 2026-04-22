@@ -1,24 +1,26 @@
+# dependencies.txt
+
 fastapi
 uvicorn[standard]
 
-torch==2.1.2
-torchaudio==2.1.2
+# PyTorch CPU-only (no CUDA wheels = ~250MB instead of ~2GB)
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch==2.3.1+cpu
+torchaudio==2.3.1+cpu
 
-transformers==4.36.2
-sentence-transformers==2.2.2
+transformers==4.41.2
+sentence-transformers==2.7.0
 
-numpy
-pillow
-
-python-dotenv
-
-langchain==0.1.0
-langchain-community
-langchain-core
-langchain-huggingface
-langchain-groq
-langsmith
+langchain==0.2.16
+langchain-community==0.2.16
+langchain-core==0.2.38
+langchain-huggingface==0.0.3
+langchain-groq==0.1.9
+langsmith==0.1.98
 
 faiss-cpu
 
+numpy<2.0
+pillow
+python-dotenv
 pypdf
