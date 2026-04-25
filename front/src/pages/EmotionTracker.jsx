@@ -1,6 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { UploadCloud, Camera, Mic, Loader2, Video, StopCircle, Brain, RefreshCcw, Activity } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { UploadCloud, Camera, Mic, Loader2, Video, StopCircle, Brain, RefreshCcw, Activity, Gamepad2, Sparkles } from 'lucide-react';
 import api from '../lib/axios';
+import { generateGame } from '../lib/gameEngine';
+import useEmotionStore from '../store/useEmotionStore';
+import useGameStore from '../store/useGameStore';
 
 // Helper to convert Web Audio API AudioBuffer to WAV format
 const audioBufferToWav = (buffer) => {
@@ -53,12 +57,34 @@ const audioBufferToWav = (buffer) => {
   return new Blob([result], { type: "audio/wav" });
 };
 
+// Map backend emotion names → engine lowercase keys
+const EMOTION_MAP = {
+  happy: 'happy', sad: 'sad', angry: 'angry',
+  neutral: 'neutral', anxious: 'anxious', fear: 'anxious', surprise: 'happy',
+  disgust: 'angry',
+};
+
+// Infer energy level from confidence score
+const inferEnergy = (confidence = 0) => {
+  if (confidence > 0.7) return 'high';
+  if (confidence > 0.4) return 'medium';
+  return 'low';
+};
+
+const EMOTION_EMOJIS = { sad:'😢', anxious:'😰', happy:'😊', angry:'😤', neutral:'😐' };
+const DIFFICULTY_COLORS = { easy:'#10b981', medium:'#f59e0b', hard:'#ef4444' };
+
 const EmotionTracker = () => {
+  const navigate = useNavigate();
+  const { setEmotion } = useEmotionStore();
+  const { streak_days, past_sessions } = useGameStore();
+
   const [faceFile, setFaceFile] = useState(null);
   const [voiceFile, setVoiceFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
+  const [gameRec, setGameRec] = useState(null); // generated game recommendation
 
   // Advice & Safety State
   const [advice, setAdvice] = useState(null);
@@ -234,6 +260,7 @@ const EmotionTracker = () => {
     setLoading(true);
     setResult(null);
     setAdvice(null);
+    setGameRec(null);
     setContactNotified(false);
 
     try {
@@ -258,9 +285,25 @@ const EmotionTracker = () => {
       
       setResult(unifiedData);
       setAdvice(unifiedData.advice || "No specific advice generated for this session.");
-      
+
+      // ── Persist detected emotion + generate game recommendation ──
+      const rawEmotion = (unifiedData?.emotion?.state || 'neutral').toLowerCase();
+      const mappedEmotion = EMOTION_MAP[rawEmotion] || 'neutral';
+      const confidence    = unifiedData?.emotion?.confidence || 0;
+      const energyLevel   = inferEnergy(confidence);
+      setEmotion(mappedEmotion, energyLevel, 'focused', confidence);
+
+      const spec = generateGame({
+        emotion: mappedEmotion,
+        energy_level: energyLevel,
+        user_behavior: 'focused',
+        streak_days,
+        past_sessions: past_sessions.map((s) => ({ game_type: s.game_type || s.game_name, game_name: s.game_name })),
+      });
+      setGameRec(spec);
+
       if (unifiedData.contactNotified) {
-         setContactNotified(unifiedData.contactNotified); // 'success' or 'failed'
+         setContactNotified(unifiedData.contactNotified);
       }
 
     } catch (err) {
@@ -482,7 +525,96 @@ const EmotionTracker = () => {
                <p className="text-muted">No specific advice generated for this session.</p>
             )}
           </div>
-          
+
+          {/* ── Game Recommendation Panel ── */}
+          {gameRec && (
+            <div className="glass-panel animate-fade-in" style={{ padding: '2rem', border: '1px solid rgba(139, 92, 246, 0.35)', position: 'relative', overflow: 'hidden' }}>
+              {/* Background glow */}
+              <div style={{ position: 'absolute', top: '-60px', right: '-60px', width: '220px', height: '220px', background: '#8b5cf6', filter: 'blur(110px)', opacity: '0.15', pointerEvents: 'none' }} />
+              <div style={{ position: 'absolute', bottom: '-60px', left: '-60px', width: '180px', height: '180px', background: '#ec4899', filter: 'blur(100px)', opacity: '0.1', pointerEvents: 'none' }} />
+
+              {/* Header */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem' }}>
+                <div style={{ padding: '0.5rem', background: 'rgba(139,92,246,0.15)', borderRadius: '50%' }}>
+                  <Gamepad2 color="#a78bfa" size={22} />
+                </div>
+                <div>
+                  <h2 style={{ fontSize: '1.4rem', fontWeight: 800, margin: 0 }}>Game Recommendation</h2>
+                  <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', margin: 0 }}>Based on your detected emotional state</p>
+                </div>
+                <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <span style={{ fontSize: '1.5rem' }}>{EMOTION_EMOJIS[result?.emotion?.state?.toLowerCase()] || '🎮'}</span>
+                  <span style={{ fontSize: '0.8rem', padding: '0.3rem 0.75rem', borderRadius: '999px', background: 'rgba(139,92,246,0.15)', border: '1px solid rgba(139,92,246,0.3)', color: '#c4b5fd', textTransform: 'capitalize', fontWeight: 600 }}>
+                    {result?.emotion?.state || 'neutral'}
+                  </span>
+                </div>
+              </div>
+
+              {/* Game Card */}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: '1.5rem', alignItems: 'center', background: 'rgba(0,0,0,0.3)', borderRadius: 'var(--radius-md)', padding: '1.5rem', border: '1px solid rgba(255,255,255,0.05)', marginBottom: '1.5rem' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
+                    <span style={{ fontSize: '1.3rem', fontWeight: 800 }}>{gameRec.game_name}</span>
+                    <span style={{ padding: '0.2rem 0.65rem', borderRadius: '999px', fontSize: '0.72rem', fontWeight: 700, color: DIFFICULTY_COLORS[gameRec.difficulty], background: `${DIFFICULTY_COLORS[gameRec.difficulty]}22`, border: `1px solid ${DIFFICULTY_COLORS[gameRec.difficulty]}44` }}>
+                      {gameRec.difficulty}
+                    </span>
+                    <span style={{ padding: '0.2rem 0.65rem', borderRadius: '999px', fontSize: '0.72rem', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', color: 'var(--text-secondary)' }}>
+                      ⏱ {gameRec.estimated_time}
+                    </span>
+                  </div>
+                  <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', margin: 0 }}>{gameRec.goal}</p>
+                  <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginTop: '0.25rem' }}>
+                    <span style={{ padding: '0.25rem 0.7rem', borderRadius: '999px', fontSize: '0.75rem', fontWeight: 700, background: 'rgba(139,92,246,0.15)', border: '1px solid rgba(139,92,246,0.3)', color: '#a78bfa' }}>
+                      +{gameRec.reward_system.xp}
+                    </span>
+                    <span style={{ padding: '0.25rem 0.7rem', borderRadius: '999px', fontSize: '0.75rem', fontWeight: 700, background: 'rgba(249,115,22,0.12)', border: '1px solid rgba(249,115,22,0.3)', color: '#fb923c' }}>
+                      {gameRec.reward_system.bonus}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Rules preview */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem', minWidth: '160px' }}>
+                  {gameRec.rules.slice(0, 3).map((rule, i) => (
+                    <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.4rem', fontSize: '0.78rem', color: 'var(--text-secondary)' }}>
+                      <span style={{ color: '#8b5cf6', flexShrink: 0 }}>▸</span> {rule}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* CTAs */}
+              <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+                <button
+                  id="btn-play-game"
+                  className="btn btn-primary"
+                  style={{ flex: 1, minWidth: '180px', fontSize: '1rem', gap: '0.6rem' }}
+                  onClick={() => navigate('/games')}
+                >
+                  <Gamepad2 size={18} /> Play Now →
+                </button>
+                <button
+                  id="btn-analyze-again"
+                  className="btn btn-secondary"
+                  style={{ flex: 1, minWidth: '160px' }}
+                  onClick={() => { setResult(null); setGameRec(null); setAdvice(null); }}
+                >
+                  <RefreshCcw size={18} /> Analyze Again
+                </button>
+              </div>
+
+              {/* Motivational note */}
+              <div style={{ marginTop: '1rem', padding: '0.75rem 1rem', background: 'rgba(139,92,246,0.06)', borderRadius: 'var(--radius-md)', border: '1px solid rgba(139,92,246,0.15)', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                <Sparkles size={16} color="#a78bfa" style={{ flexShrink: 0 }} />
+                <span style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
+                  This game was selected specifically for your <strong style={{ color: '#c4b5fd' }}>{result?.emotion?.state || 'current'}</strong> mood.
+                  Playing for just {gameRec.estimated_time} can meaningfully shift your emotional state.
+                </span>
+              </div>
+            </div>
+          )}
+
+
         </div>
       )}
     </div>

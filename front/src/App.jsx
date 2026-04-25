@@ -14,6 +14,7 @@ import Profile from './pages/Profile';
 import EmotionTracker from './pages/EmotionTracker';
 import EmotionHistory from './pages/EmotionHistory';
 import Contacts from './pages/Contacts';
+import Games from './pages/Games';
 
 const Layout = ({ children }) => (
   <div className="app-layout">
@@ -89,6 +90,14 @@ function App() {
           element={
             <ProtectedRoute>
               <Contacts />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/games" 
+          element={
+            <ProtectedRoute>
+              <Games />
             </ProtectedRoute>
           } 
         />
