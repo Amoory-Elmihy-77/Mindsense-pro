@@ -13,6 +13,7 @@ import Dashboard from './pages/Dashboard';
 import Profile from './pages/Profile';
 import EmotionTracker from './pages/EmotionTracker';
 import EmotionHistory from './pages/EmotionHistory';
+import Analytics from './pages/Analytics';
 import Contacts from './pages/Contacts';
 import Games from './pages/Games';
 
@@ -98,6 +99,14 @@ function App() {
           element={
             <ProtectedRoute>
               <Games />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/analytics" 
+          element={
+            <ProtectedRoute>
+              <Analytics />
             </ProtectedRoute>
           } 
         />

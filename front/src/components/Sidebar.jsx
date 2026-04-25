@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Smile, Activity, Users, Settings, LogOut, Brain, Gamepad2 } from 'lucide-react';
+import { LayoutDashboard, Smile, Activity, Users, Settings, LogOut, Brain, Gamepad2, TrendingUp } from 'lucide-react';
 import useAuthStore from '../store/useAuthStore';
 import '../styles/dashboard.css';
 
@@ -11,6 +11,7 @@ const Sidebar = () => {
     { name: 'Overview',          path: '/dashboard', icon: <LayoutDashboard size={20} /> },
     { name: 'Emotion Tracker',   path: '/emotion',   icon: <Smile size={20} /> },
     { name: 'Mind Games',        path: '/games',     icon: <Gamepad2 size={20} /> },
+    { name: 'Behavioral Analytics', path: '/analytics', icon: <TrendingUp size={20} /> },
     { name: 'Analysis & Reports',path: '/history',   icon: <Activity size={20} /> },
     { name: 'Trusted Contacts',  path: '/contacts',  icon: <Users size={20} /> },
     { name: 'Profile Settings',  path: '/profile',   icon: <Settings size={20} /> },
