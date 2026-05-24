@@ -5,7 +5,7 @@
 torch==2.3.1+cpu
 torchaudio==2.3.1+cpu
 torchvision==0.18.1+cpu
-facenet-pytorch==2.6.0
+facenet-pytorch==2.5.2
 
 # ==========================================
 # 2. Web Framework & Server
@@ -25,7 +25,8 @@ opencv-python==4.9.0.80
 pillow==10.2.0
 sounddevice==0.5.5
 protobuf==4.25.9
-
+librosa==0.10.2    
+soundfile==0.12.1 
 # ==========================================
 # 4. LangChain, RAG & LLMs
 # ==========================================
