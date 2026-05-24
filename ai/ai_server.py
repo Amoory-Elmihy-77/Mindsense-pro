@@ -5,8 +5,7 @@ from fastapi import FastAPI, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List, Optional
-from Models.face_recognition import analyze_face_stream
-from Models.online_Voice_model import analyze_voice_stream
+from Models import analyze_face_stream, analyze_voice_stream
 from Rag.knowledge_base import get_intervention
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
