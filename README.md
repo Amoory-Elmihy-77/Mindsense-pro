@@ -64,7 +64,7 @@ pip install -r requirements.txt
 
 Due to the large file size of the voice model weights exceeding GitHub's strict limits, the model directory is **excluded from this repository**. Please follow these steps:
 
-1. Download the compressed model file from **[INSERT YOUR GOOGLE DRIVE LINK HERE]**.
+1. Download the compressed model file from **[[here](https://drive.google.com/file/d/1UE0JN56y2R2avnD23H1TgWkX63ZTCf0b/view?usp=drive_link)]**.
 2. Extract the archive and place its contents into the following path:
    ```
    Models/ser_output/final_model/
