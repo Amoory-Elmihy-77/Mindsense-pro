@@ -88,7 +88,18 @@ const ensureAnalysisSucceeded = (result, source) => {
   }
 };
 
-const dangerousEmotions = ['حزين', 'غاضب', 'خائف', 'مكتئب', 'sad', 'angry', 'fear', 'depressed', 'anxious', 'stress'];
+const dangerousEmotions = [
+  "حزين",
+  "غاضب",
+  "خائف",
+  "مكتئب",
+  "sad",
+  "angry",
+  "fear",
+  "depressed",
+  "anxious",
+  "stress",
+];
 
 const enrichAnalysisWithAdviceAndAlerts = async (userId, state) => {
   let advice = null;
@@ -96,10 +107,14 @@ const enrichAnalysisWithAdviceAndAlerts = async (userId, state) => {
 
   try {
     const adviceRes = await aiService.getIntervention(state);
-    if (adviceRes && typeof adviceRes === 'object') {
-       advice = adviceRes.advice || adviceRes.message || adviceRes.recommendations || adviceRes;
+    if (adviceRes && typeof adviceRes === "object") {
+      advice =
+        adviceRes.advice ||
+        adviceRes.message ||
+        adviceRes.recommendations ||
+        adviceRes;
     } else {
-       advice = adviceRes;
+      advice = adviceRes;
     }
   } catch (err) {
     console.error("Failed to fetch advice inside service", err);
@@ -108,21 +123,25 @@ const enrichAnalysisWithAdviceAndAlerts = async (userId, state) => {
   if (state && dangerousEmotions.includes(String(state).toLowerCase().trim())) {
     try {
       const user = await User.findById(userId);
-      if (user && user.trustedContact && user.trustedContact.status === "accepted") {
+      if (
+        user &&
+        user.trustedContact &&
+        user.trustedContact.status === "accepted"
+      ) {
         const message = `Hello ${user.trustedContact.name},\n\n${user.name} may be experiencing a high stress state (${state}).\nAutomated System Alert: Our continuous emotion tracker has identified they might be in a highly distressed or dangerous state. Please check in with them immediately.\n\nMindSense AI`;
-        
+
         await sendEmail({
           email: user.trustedContact.email,
           subject: "MindSense AI alert for a trusted contact",
           message,
         });
-        contactNotified = 'success';
+        contactNotified = "success";
       } else {
-        contactNotified = 'failed';
+        contactNotified = "failed";
       }
     } catch (err) {
       console.error("Failed to notify trusted contact inside service", err);
-      contactNotified = 'failed';
+      contactNotified = "failed";
     }
   }
 
@@ -142,8 +161,16 @@ exports.detectFaceAndSave = async (userId, fileBuffer) => {
     raw: result,
   });
 
-  const enriched = await enrichAnalysisWithAdviceAndAlerts(userId, normalized.state);
-  return { result, emotion, advice: enriched.advice, contactNotified: enriched.contactNotified };
+  const enriched = await enrichAnalysisWithAdviceAndAlerts(
+    userId,
+    normalized.state,
+  );
+  return {
+    result,
+    emotion,
+    advice: enriched.advice,
+    contactNotified: enriched.contactNotified,
+  };
 };
 
 exports.detectVoiceAndSave = async (userId, filePayload) => {
@@ -159,8 +186,16 @@ exports.detectVoiceAndSave = async (userId, filePayload) => {
     raw: result,
   });
 
-  const enriched = await enrichAnalysisWithAdviceAndAlerts(userId, normalized.state);
-  return { result, emotion, advice: enriched.advice, contactNotified: enriched.contactNotified };
+  const enriched = await enrichAnalysisWithAdviceAndAlerts(
+    userId,
+    normalized.state,
+  );
+  return {
+    result,
+    emotion,
+    advice: enriched.advice,
+    contactNotified: enriched.contactNotified,
+  };
 };
 
 exports.detectAllAndSave = async (userId, facePayload, voicePayload) => {
@@ -176,8 +211,16 @@ exports.detectAllAndSave = async (userId, facePayload, voicePayload) => {
     raw: result,
   });
 
-  const enriched = await enrichAnalysisWithAdviceAndAlerts(userId, normalized.state);
-  return { result, emotion, advice: enriched.advice, contactNotified: enriched.contactNotified };
+  const enriched = await enrichAnalysisWithAdviceAndAlerts(
+    userId,
+    normalized.state,
+  );
+  return {
+    result,
+    emotion,
+    advice: enriched.advice,
+    contactNotified: enriched.contactNotified,
+  };
 };
 
 exports.getHistory = async (userId, filters) => {
@@ -231,4 +274,97 @@ exports.getReport = async (userId, filters) => {
   ];
 
   return await Emotion.aggregate(pipeline);
+};
+
+exports.getTrends = async (userId, timeRange = "week") => {
+  const from = new Date();
+  if (timeRange === "week") {
+    from.setDate(from.getDate() - 7);
+  } else if (timeRange === "month") {
+    from.setMonth(from.getMonth() - 1);
+  } else {
+    from.setDate(from.getDate() - 7);
+  }
+
+  const history = await Emotion.find({
+    user: userId,
+    createdAt: { $gte: from },
+  }).sort({ createdAt: 1 });
+
+  const user_emotions = history.map((record) => ({
+    date: record.createdAt.toISOString(),
+    emotion: record.state,
+    confidence: record.confidence || 0.0,
+  }));
+
+  const trendsResult = await aiService.analyzeTrends({
+    time_range: timeRange,
+    user_emotions,
+  });
+
+  return trendsResult;
+};
+
+exports.getFlutterDashboard = async (userId) => {
+  const from = new Date();
+  from.setDate(from.getDate() - 6);
+  from.setHours(0, 0, 0, 0);
+
+  const history = await Emotion.find({
+    user: userId,
+    createdAt: { $gte: from },
+  }).sort({ createdAt: 1 });
+
+  const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  // Ensure chronologically sorted last 7 days starting from 6 days ago up to today
+  const chartMap = new Map();
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    const dayStr = days[d.getDay()];
+    chartMap.set(dayStr, { day: dayStr, faceScore: 0, voiceScore: 0 });
+  }
+
+  history.forEach((record) => {
+    const dayStr = days[record.createdAt.getDay()];
+    const entry = chartMap.get(dayStr);
+    if (entry) {
+      if (record.source === "face") entry.faceScore += 1;
+      else if (record.source === "voice") entry.voiceScore += 1;
+      else {
+        // fusion counts as both
+        entry.faceScore += 1;
+        entry.voiceScore += 1;
+      }
+    }
+  });
+
+  const chartData = Array.from(chartMap.values());
+
+  const user_emotions = history.map((record) => ({
+    date: record.createdAt.toISOString(),
+    emotion: record.state,
+    confidence: record.confidence || 0.0,
+  }));
+
+  let overviewText =
+    "This week's analysis of your patterns suggests stability.";
+  if (user_emotions.length > 0) {
+    try {
+      const trendsResult = await aiService.analyzeTrends({
+        time_range: "week",
+        user_emotions,
+      });
+      // Fallback text if insights are missing
+      overviewText = trendsResult.insights?.[0] || overviewText;
+    } catch (e) {
+      console.error("AI service failure in flutter dashboard:", e);
+    }
+  }
+
+  return {
+    chartData,
+    overviewTitle: "Weekly Mood Overview",
+    overviewText,
+  };
 };

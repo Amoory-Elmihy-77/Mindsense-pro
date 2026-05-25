@@ -6,10 +6,8 @@ exports.detectFace = async (req, res) => {
       return res.status(400).json({ error: "Face image file is required" });
     }
 
-    const { result, emotion, advice, contactNotified } = await emotionService.detectFaceAndSave(
-      req.user.id,
-      req.file.buffer,
-    );
+    const { result, emotion, advice, contactNotified } =
+      await emotionService.detectFaceAndSave(req.user.id, req.file.buffer);
 
     res.json({ analysis: result, emotion, advice, contactNotified });
   } catch (err) {
@@ -23,14 +21,12 @@ exports.detectVoice = async (req, res) => {
       return res.status(400).json({ error: "Voice audio file is required" });
     }
 
-    const { result, emotion, advice, contactNotified } = await emotionService.detectVoiceAndSave(
-      req.user.id,
-      {
+    const { result, emotion, advice, contactNotified } =
+      await emotionService.detectVoiceAndSave(req.user.id, {
         buffer: req.file.buffer,
         originalname: req.file.originalname,
         mimetype: req.file.mimetype,
-      },
-    );
+      });
 
     res.json({ analysis: result, emotion, advice, contactNotified });
   } catch (err) {
@@ -49,19 +45,20 @@ exports.detectAll = async (req, res) => {
         .json({ error: "Both face and voice files are required" });
     }
 
-    const { result, emotion, advice, contactNotified } = await emotionService.detectAllAndSave(
-      req.user.id,
-      {
-        buffer: faceFile.buffer,
-        originalname: faceFile.originalname,
-        mimetype: faceFile.mimetype,
-      },
-      {
-        buffer: voiceFile.buffer,
-        originalname: voiceFile.originalname,
-        mimetype: voiceFile.mimetype,
-      },
-    );
+    const { result, emotion, advice, contactNotified } =
+      await emotionService.detectAllAndSave(
+        req.user.id,
+        {
+          buffer: faceFile.buffer,
+          originalname: faceFile.originalname,
+          mimetype: faceFile.mimetype,
+        },
+        {
+          buffer: voiceFile.buffer,
+          originalname: voiceFile.originalname,
+          mimetype: voiceFile.mimetype,
+        },
+      );
 
     res.json({ analysis: result, emotion, advice, contactNotified });
   } catch (err) {
@@ -104,6 +101,26 @@ exports.getReport = async (req, res) => {
     });
 
     res.status(200).json({ status: "success", data: report });
+  } catch (err) {
+    res.status(400).json({ status: "fail", message: err.message });
+  }
+};
+
+exports.getTrends = async (req, res) => {
+  try {
+    const timeRange = req.query.timeRange || "week";
+    const trends = await emotionService.getTrends(req.user.id, timeRange);
+
+    res.status(200).json({ status: "success", data: trends });
+  } catch (err) {
+    res.status(400).json({ status: "fail", message: err.message });
+  }
+};
+
+exports.getFlutterDashboard = async (req, res) => {
+  try {
+    const data = await emotionService.getFlutterDashboard(req.user.id);
+    res.status(200).json({ status: "success", data });
   } catch (err) {
     res.status(400).json({ status: "fail", message: err.message });
   }

@@ -29,5 +29,11 @@ router.post(
 );
 router.get("/history", authMiddleware.protect, emotionController.getHistory);
 router.get("/report", authMiddleware.protect, emotionController.getReport);
+router.get("/trends", authMiddleware.protect, emotionController.getTrends);
+router.get(
+  "/flutter-dashboard",
+  authMiddleware.protect,
+  emotionController.getFlutterDashboard,
+);
 
 module.exports = router;

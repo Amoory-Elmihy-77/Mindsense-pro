@@ -80,3 +80,9 @@ exports.getIntervention = async (state) => {
 
   return res.data;
 };
+
+// ================= TRENDS =================
+exports.analyzeTrends = async (payload) => {
+  const res = await axios.post(`${AI_BASE_URL}/analyze-trends`, payload);
+  return res.data;
+};

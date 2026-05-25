@@ -1,4 +1,4 @@
-FROM python:3.10.12-slim
+FROM python:3.10-slim
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
@@ -6,24 +6,22 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 WORKDIR /app
 
-# System packages needed by Torch/Torchaudio/Pillow and common model runtimes
+# System packages
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ffmpeg \
     libsndfile1 \
     libgomp1 \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy dependency manifest first for better layer caching
-COPY dependencies.txt .
+# Dependencies (cache friendly)
+COPY requirements.txt .
 
 RUN pip install --upgrade pip && \
-    pip install -r dependencies.txt && \
-    pip install python-multipart
+    pip install -r requirements.txt
 
-# Copy application source
+# Copy whole project INCLUDING models
 COPY . .
 
 EXPOSE 8000
 
-# FastAPI app entrypoint
-CMD ["uvicorn", "ai_server:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "server:app", "--host", "0.0.0.0", "--port", "8000"]

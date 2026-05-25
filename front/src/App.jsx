@@ -1,39 +1,41 @@
-import React, { useEffect } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import useAuthStore from './store/useAuthStore';
-import Sidebar from './components/Sidebar';
-import Topbar from './components/Topbar';
+import React, { useEffect } from "react";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import useAuthStore from "./store/useAuthStore";
+import Sidebar from "./components/Sidebar";
+import Topbar from "./components/Topbar";
 
-import Login from './pages/Login';
-import Signup from './pages/Signup';
-import Verify from './pages/Verify';
-import ForgotPassword from './pages/ForgotPassword';
-import ResetPassword from './pages/ResetPassword';
-import Dashboard from './pages/Dashboard';
-import Profile from './pages/Profile';
-import EmotionTracker from './pages/EmotionTracker';
-import EmotionHistory from './pages/EmotionHistory';
-import Analytics from './pages/Analytics';
-import Contacts from './pages/Contacts';
-import Games from './pages/Games';
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
+import Verify from "./pages/Verify";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
+import Dashboard from "./pages/Dashboard";
+import Profile from "./pages/Profile";
+import EmotionTracker from "./pages/EmotionTracker";
+import EmotionHistory from "./pages/EmotionHistory";
+import Analytics from "./pages/Analytics";
+import Contacts from "./pages/Contacts";
+import Games from "./pages/Games";
+import FlutterDashboard from "./pages/FlutterDashboard";
 
 const Layout = ({ children }) => (
   <div className="app-layout">
     <Sidebar />
-    <div className="flex-col w-full h-screen overflow-hidden" style={{display: 'flex', flexDirection: 'column'}}>
+    <div
+      className="flex-col w-full h-screen overflow-hidden"
+      style={{ display: "flex", flexDirection: "column" }}
+    >
       <Topbar />
-      <main className="main-content flex-1">
-        {children}
-      </main>
+      <main className="main-content flex-1">{children}</main>
     </div>
   </div>
 );
 
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated } = useAuthStore();
-  
+
   if (!isAuthenticated) return <Navigate to="/login" replace />;
-  
+
   return <Layout>{children}</Layout>;
 };
 
@@ -54,63 +56,76 @@ function App() {
         <Route path="/verify" element={<Verify />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
-        <Route 
-          path="/dashboard" 
+        <Route
+          path="/dashboard"
           element={
             <ProtectedRoute>
               <Dashboard />
             </ProtectedRoute>
-          } 
+          }
         />
-        <Route 
-          path="/profile" 
+        <Route
+          path="/profile"
           element={
             <ProtectedRoute>
               <Profile />
             </ProtectedRoute>
-          } 
+          }
         />
-        <Route 
-          path="/emotion" 
+        <Route
+          path="/emotion"
           element={
             <ProtectedRoute>
               <EmotionTracker />
             </ProtectedRoute>
-          } 
+          }
         />
-        <Route 
-          path="/history" 
+        <Route
+          path="/history"
           element={
             <ProtectedRoute>
               <EmotionHistory />
             </ProtectedRoute>
-          } 
+          }
         />
-        <Route 
-          path="/contacts" 
+        <Route
+          path="/contacts"
           element={
             <ProtectedRoute>
               <Contacts />
             </ProtectedRoute>
-          } 
+          }
         />
-        <Route 
-          path="/games" 
+        <Route
+          path="/games"
           element={
             <ProtectedRoute>
               <Games />
             </ProtectedRoute>
-          } 
+          }
         />
-        <Route 
-          path="/analytics" 
+        <Route
+          path="/analytics"
           element={
             <ProtectedRoute>
               <Analytics />
             </ProtectedRoute>
-          } 
+          }
         />
-        <Route path="*" element={<Navigate to={isAuthenticated ? "/dashboard" : "/login"} replace />} />
+        <Route
+          path="/flutter-dashboard"
+          element={
+            <ProtectedRoute>
+              <FlutterDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="*"
+          element={
+            <Navigate to={isAuthenticated ? "/dashboard" : "/login"} replace />
+          }
+        />
       </Routes>
     </BrowserRouter>
   );
