@@ -9,9 +9,15 @@ const api = axios.create({
 
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
+  const method = (config.method || 'get').toLowerCase();
+
   if (config.data instanceof FormData) {
     delete config.headers['Content-Type'];
+  } else if (method === 'get' || method === 'head' || method === 'delete') {
+    // Express 5 rejects GET requests that send Content-Type: application/json with no body
+    delete config.headers['Content-Type'];
   }
+
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }

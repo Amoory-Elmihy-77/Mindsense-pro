@@ -11,6 +11,7 @@ import {
   Gamepad2,
   TrendingUp,
   Smartphone,
+  Mic,
 } from "lucide-react";
 import useAuthStore from "../store/useAuthStore";
 import "../styles/dashboard.css";
@@ -26,6 +27,7 @@ const Sidebar = () => {
     },
     { name: "Emotion Tracker", path: "/emotion", icon: <Smile size={20} /> },
     { name: "Mind Games", path: "/games", icon: <Gamepad2 size={20} /> },
+    { name: "Voice Companion", path: "/companion", icon: <Mic size={20} /> },
     {
       name: "Behavioral Analytics",
       path: "/analytics",

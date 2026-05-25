@@ -14,6 +14,11 @@ app = FastAPI(
     description="Multimodal emotion recognition using face + voice fusion",
     version="2.0.0",
 )
+
+# Mount Voice Companion Router
+from voice_companion.voice_router import router as companion_router
+app.include_router(companion_router, prefix="/companion", tags=["Voice Companion"])
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],

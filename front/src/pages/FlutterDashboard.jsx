@@ -149,8 +149,8 @@ const FlutterDashboard = () => {
       </div>
 
       {/* Chart */}
-      <div style={{ height: "300px", marginBottom: "2rem" }}>
-        <ResponsiveContainer width="100%" height="100%">
+      <div style={{ height: "300px", width: "100%", minWidth: 0, minHeight: 300, marginBottom: "2rem" }}>
+        <ResponsiveContainer width="100%" height="100%" minWidth={0}>
           <BarChart data={data.chartData} barSize={16}>
             <XAxis
               dataKey="day"

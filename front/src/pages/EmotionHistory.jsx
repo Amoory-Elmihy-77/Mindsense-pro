@@ -72,8 +72,8 @@ const EmotionHistory = () => {
               <p className="text-muted">Not enough data to display chart.</p>
             </div>
           ) : (
-             <div style={{ width: '100%', height: 350 }}>
-               <ResponsiveContainer>
+             <div style={{ width: '100%', height: 350, minWidth: 0, minHeight: 350 }}>
+               <ResponsiveContainer width="100%" height="100%" minWidth={0}>
                  <PieChart>
                    <Pie
                      data={pieData}

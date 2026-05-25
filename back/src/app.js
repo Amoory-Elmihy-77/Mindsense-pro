@@ -6,6 +6,7 @@ const helmet = require("helmet");
 const userRouter = require("./routes/userRoutes");
 const emotionRoutes = require("./routes/emotionRoutes");
 const interventionRoutes = require("./routes/interventionRoutes");
+const voiceRoutes = require("./routes/voiceRoutes");
 
 const app = express();
 
@@ -19,6 +20,7 @@ app.use(morgan("dev"));
 app.use("/api/v1/users", userRouter);
 app.use("/api/emotion", emotionRoutes);
 app.use("/api/intervention", interventionRoutes);
+app.use("/api/v1/voice", voiceRoutes);
 
 // Test Route
 app.get("/", (req, res) => {

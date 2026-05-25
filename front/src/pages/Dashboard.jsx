@@ -159,8 +159,8 @@ const Dashboard = () => {
                 <p className="text-muted">Perform emotion scans to populate your timeline.</p>
               </div>
             ) : (
-              <div style={{ width: '100%', height: 350 }}>
-                <ResponsiveContainer>
+              <div style={{ width: '100%', height: 350, minWidth: 0, minHeight: 350 }}>
+                <ResponsiveContainer width="100%" height="100%" minWidth={0}>
                   <AreaChart data={reportData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                     <defs>
                       {uniqueEmotions.map((em, idx) => (

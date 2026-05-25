@@ -17,6 +17,7 @@ import Analytics from "./pages/Analytics";
 import Contacts from "./pages/Contacts";
 import Games from "./pages/Games";
 import FlutterDashboard from "./pages/FlutterDashboard";
+import VoiceCompanion from "./pages/VoiceCompanion";
 
 const Layout = ({ children }) => (
   <div className="app-layout">
@@ -101,6 +102,14 @@ function App() {
           element={
             <ProtectedRoute>
               <Games />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/companion"
+          element={
+            <ProtectedRoute>
+              <VoiceCompanion />
             </ProtectedRoute>
           }
         />

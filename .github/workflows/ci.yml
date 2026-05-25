@@ -1,0 +1,43 @@
+name: MindSense Pro CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20'
+
+    - name: Frontend Checks
+      run: |
+        cd front
+        npm ci
+        npm run lint
+        npm run build
+
+    - name: Backend Checks
+      run: |
+        cd back
+        npm ci
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: AI Service Checks
+      run: |
+        cd ai
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        # Add pytest here if tests exist

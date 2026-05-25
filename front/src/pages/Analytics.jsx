@@ -247,8 +247,8 @@ const Analytics = () => {
           <Activity color="var(--accent-primary)" /> Emotion Valence Trend
         </h2>
         {analysis.rolling_average && analysis.rolling_average.length > 0 ? (
-          <div style={{ height: "300px", width: "100%", marginTop: "1rem" }}>
-            <ResponsiveContainer width="100%" height="100%">
+          <div style={{ height: "300px", width: "100%", minWidth: 0, minHeight: 300, marginTop: "1rem" }}>
+            <ResponsiveContainer width="100%" height="100%" minWidth={0}>
               <AreaChart
                 data={analysis.rolling_average}
                 margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
