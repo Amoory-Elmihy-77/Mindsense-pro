@@ -1,18 +1,30 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import useAuthStore from '../store/useAuthStore';
-import { Mail, Lock, User, ArrowRight, Brain, Calendar } from 'lucide-react';
-import '../styles/auth.css';
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import useAuthStore from "../store/useAuthStore";
+import { Mail, Lock, User, ArrowRight, Brain, Calendar } from "lucide-react";
+import "../styles/auth.css";
 
 const Signup = () => {
   const [formData, setFormData] = useState({
-    name: '', email: '', password: '', passwordConfirm: '', age: ''
+    name: "",
+    email: "",
+    password: "",
+    passwordConfirm: "",
+    age: "",
+    role: "user",
   });
   const { signup, isLoading, error } = useAuthStore();
   const navigate = useNavigate();
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const value =
+      e.target.type === "checkbox"
+        ? e.target.checked
+          ? "professional"
+          : "user"
+        : e.target.value;
+    const name = e.target.type === "checkbox" ? "role" : e.target.name;
+    setFormData({ ...formData, [name]: value });
   };
 
   const handleSubmit = async (e) => {
@@ -30,7 +42,7 @@ const Signup = () => {
       <div className="auth-card glass-panel signup-card">
         <div className="auth-header text-center">
           <div className="auth-logo-wrapper">
-             <Brain size={40} className="auth-logo" />
+            <Brain size={40} className="auth-logo" />
           </div>
           <h1>Create Account</h1>
           <p className="text-muted text-sm mt-2">Join MindSense AI today</p>
@@ -41,38 +53,106 @@ const Signup = () => {
         <form onSubmit={handleSubmit} className="auth-form flex-col gap-4 mt-4">
           <div className="input-group">
             <User className="input-icon" size={20} />
-            <input type="text" name="name" className="input-field with-icon" placeholder="Full Name" value={formData.name} onChange={handleChange} required />
+            <input
+              type="text"
+              name="name"
+              className="input-field with-icon"
+              placeholder="Full Name"
+              value={formData.name}
+              onChange={handleChange}
+              required
+            />
           </div>
 
           <div className="input-group">
             <Mail className="input-icon" size={20} />
-            <input type="email" name="email" className="input-field with-icon" placeholder="Email Address" value={formData.email} onChange={handleChange} required />
+            <input
+              type="email"
+              name="email"
+              className="input-field with-icon"
+              placeholder="Email Address"
+              value={formData.email}
+              onChange={handleChange}
+              required
+            />
           </div>
 
           <div className="input-group">
             <Calendar className="input-icon" size={20} />
-            <input type="number" name="age" className="input-field with-icon" placeholder="Age" min="1" value={formData.age} onChange={handleChange} required />
+            <input
+              type="number"
+              name="age"
+              className="input-field with-icon"
+              placeholder="Age"
+              min="1"
+              value={formData.age}
+              onChange={handleChange}
+              required
+            />
           </div>
 
           <div className="input-group">
             <Lock className="input-icon" size={20} />
-            <input type="password" name="password" className="input-field with-icon" placeholder="Password" value={formData.password} onChange={handleChange} required />
+            <input
+              type="password"
+              name="password"
+              className="input-field with-icon"
+              placeholder="Password"
+              value={formData.password}
+              onChange={handleChange}
+              required
+            />
           </div>
 
           <div className="input-group">
             <Lock className="input-icon" size={20} />
-            <input type="password" name="passwordConfirm" className="input-field with-icon" placeholder="Confirm Password" value={formData.passwordConfirm} onChange={handleChange} required />
+            <input
+              type="password"
+              name="passwordConfirm"
+              className="input-field with-icon"
+              placeholder="Confirm Password"
+              value={formData.passwordConfirm}
+              onChange={handleChange}
+              required
+            />
           </div>
 
-          <button type="submit" className="btn btn-primary w-full mt-4" disabled={isLoading}>
-            {isLoading ? 'Creating account...' : (
-              <>Sign Up <ArrowRight size={18} /></>
+          <div className="flex items-center gap-2 mt-2 px-1">
+            <input
+              type="checkbox"
+              id="professionalRole"
+              checked={formData.role === "professional"}
+              onChange={handleChange}
+              className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+            />
+            <label
+              htmlFor="professionalRole"
+              className="text-sm font-medium text-gray-700"
+            >
+              Sign up as a Professional/Doctor
+            </label>
+          </div>
+
+          <button
+            type="submit"
+            className="btn btn-primary w-full mt-4"
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              "Creating account..."
+            ) : (
+              <>
+                Sign Up <ArrowRight size={18} />
+              </>
             )}
           </button>
         </form>
 
         <p className="text-center text-sm text-muted mt-4">
-          Already have an account? <Link to="/login" className="auth-link">Log in</Link>
+          Already have an account?{" "}
+          <Link to="/login" className="auth-link">
+            Log in
+          </Link>
         </p>
       </div>
     </div>

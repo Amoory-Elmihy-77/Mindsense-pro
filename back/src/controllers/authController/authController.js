@@ -5,7 +5,7 @@ const signToken = require("../../utils/jwtFactory");
 // SignUp
 exports.signup = async (req, res) => {
   try {
-    const { name, email, password, passwordConfirm, age } = req.body;
+    const { name, email, password, passwordConfirm, age, role } = req.body;
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -23,6 +23,17 @@ exports.signup = async (req, res) => {
       password,
       passwordConfirm,
       age,
+      role: role === "professional" ? "professional" : "user",
+      professionalProfile:
+        role === "professional"
+          ? {
+              headline: "New Professional",
+              bio: "Please update your bio.",
+              price_per_session: 100,
+              languages: ["English", "Arabic"],
+              verified: true, // Set to true here for easier testing in dev environment
+            }
+          : undefined,
       verificationCode: verifyCode,
       verificationCodeExpires: Date.now() + 10 * 60 * 1000,
     });
@@ -60,7 +71,7 @@ exports.verifyAccount = async (req, res) => {
     const { email, code } = req.body;
 
     const user = await User.findOne({ email }).select(
-      "+verificationCode +verificationCodeExpires"
+      "+verificationCode +verificationCodeExpires",
     );
 
     if (!user) {

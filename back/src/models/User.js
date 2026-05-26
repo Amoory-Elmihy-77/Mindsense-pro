@@ -27,7 +27,7 @@ const userSchema = new mongoose.Schema({
     validate: {
       validator: function (el) {
         return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(
-          el
+          el,
         );
       },
       message:
@@ -84,6 +84,40 @@ const userSchema = new mongoose.Schema({
     confirmationToken: String,
   },
 
+  // --- Professional Support Marketplace Extension ---
+  role: {
+    type: String,
+    enum: ["user", "professional", "admin"],
+    default: "user",
+  },
+  following: [
+    {
+      type: mongoose.Schema.ObjectId,
+      ref: "User",
+    },
+  ],
+  followers: [
+    {
+      type: mongoose.Schema.ObjectId,
+      ref: "User",
+    },
+  ],
+  professionalProfile: {
+    headline: { type: String },
+    bio: { type: String },
+    languages: [{ type: String }],
+    experience: { type: String },
+    price_per_session: { type: Number, default: 0 },
+    verified: { type: Boolean, default: false },
+    availability: [
+      {
+        day: { type: Number, min: 0, max: 6 }, // 0 = Sunday, 1 = Monday, etc.
+        start_time: { type: String }, // e.g., "09:00"
+        end_time: { type: String }, // e.g., "17:00"
+      },
+    ],
+  },
+
   createdAt: {
     type: Date,
     default: Date.now,
@@ -102,7 +136,7 @@ userSchema.pre("save", async function (next) {
 
 userSchema.methods.correctPassword = async function (
   candidatePassword,
-  userPassword
+  userPassword,
 ) {
   return await bcrypt.compare(candidatePassword, userPassword);
 };

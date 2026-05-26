@@ -18,6 +18,9 @@ import Contacts from "./pages/Contacts";
 import Games from "./pages/Games";
 import FlutterDashboard from "./pages/FlutterDashboard";
 import VoiceCompanion from "./pages/VoiceCompanion";
+import ProfessionalMarketplace from "./pages/ProfessionalMarketplace";
+import ProfessionalDashboard from "./pages/ProfessionalDashboard";
+import MySessions from "./pages/MySessions";
 
 const Layout = ({ children }) => (
   <div className="app-layout">
@@ -32,16 +35,24 @@ const Layout = ({ children }) => (
   </div>
 );
 
-const ProtectedRoute = ({ children }) => {
-  const { isAuthenticated } = useAuthStore();
+const ProtectedRoute = ({ children, allowedRoles }) => {
+  const { isAuthenticated, user } = useAuthStore();
 
   if (!isAuthenticated) return <Navigate to="/login" replace />;
+
+  // If roles are specified and user's role isn't among them, redirect appropriately
+  if (allowedRoles && user && !allowedRoles.includes(user.role)) {
+    if (user.role === "professional") {
+      return <Navigate to="/professional-dashboard" replace />;
+    }
+    return <Navigate to="/dashboard" replace />;
+  }
 
   return <Layout>{children}</Layout>;
 };
 
 function App() {
-  const { getMe, isAuthenticated } = useAuthStore();
+  const { getMe, isAuthenticated, user } = useAuthStore();
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -60,7 +71,7 @@ function App() {
         <Route
           path="/dashboard"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute allowedRoles={["user", "admin"]}>
               <Dashboard />
             </ProtectedRoute>
           }
@@ -76,7 +87,7 @@ function App() {
         <Route
           path="/emotion"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute allowedRoles={["user", "admin"]}>
               <EmotionTracker />
             </ProtectedRoute>
           }
@@ -84,7 +95,7 @@ function App() {
         <Route
           path="/history"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute allowedRoles={["user", "admin"]}>
               <EmotionHistory />
             </ProtectedRoute>
           }
@@ -92,7 +103,7 @@ function App() {
         <Route
           path="/contacts"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute allowedRoles={["user", "admin"]}>
               <Contacts />
             </ProtectedRoute>
           }
@@ -100,7 +111,7 @@ function App() {
         <Route
           path="/games"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute allowedRoles={["user", "admin"]}>
               <Games />
             </ProtectedRoute>
           }
@@ -108,7 +119,7 @@ function App() {
         <Route
           path="/companion"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute allowedRoles={["user", "admin"]}>
               <VoiceCompanion />
             </ProtectedRoute>
           }
@@ -116,7 +127,7 @@ function App() {
         <Route
           path="/analytics"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute allowedRoles={["user", "admin"]}>
               <Analytics />
             </ProtectedRoute>
           }
@@ -124,15 +135,48 @@ function App() {
         <Route
           path="/flutter-dashboard"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute allowedRoles={["user", "admin"]}>
               <FlutterDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/marketplace"
+          element={
+            <ProtectedRoute allowedRoles={["user", "admin"]}>
+              <ProfessionalMarketplace />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/my-sessions"
+          element={
+            <ProtectedRoute allowedRoles={["user", "admin"]}>
+              <MySessions />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/professional-dashboard"
+          element={
+            <ProtectedRoute allowedRoles={["professional", "admin"]}>
+              <ProfessionalDashboard />
             </ProtectedRoute>
           }
         />
         <Route
           path="*"
           element={
-            <Navigate to={isAuthenticated ? "/dashboard" : "/login"} replace />
+            <Navigate
+              to={
+                isAuthenticated
+                  ? user?.role === "professional"
+                    ? "/professional-dashboard"
+                    : "/dashboard"
+                  : "/login"
+              }
+              replace
+            />
           }
         />
       </Routes>
