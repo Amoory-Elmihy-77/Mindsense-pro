@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import useAuthStore from "../store/useAuthStore";
-import { Mail, Lock, User, ArrowRight, Brain, Calendar } from "lucide-react";
+import { Mail, Lock, User, ArrowRight, Brain, Calendar, Camera } from "lucide-react";
 import "../styles/auth.css";
 
 const Signup = () => {
@@ -13,6 +13,10 @@ const Signup = () => {
     age: "",
     role: "user",
   });
+  const [profileImage, setProfileImage] = useState(null);       // File object
+  const [imagePreview, setImagePreview] = useState(null);       // Object URL for preview
+  const fileInputRef = useRef(null);
+
   const { signup, isLoading, error } = useAuthStore();
   const navigate = useNavigate();
 
@@ -27,15 +31,27 @@ const Signup = () => {
     setFormData({ ...formData, [name]: value });
   };
 
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setProfileImage(file);
+    setImagePreview(URL.createObjectURL(file));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await signup(formData);
+      await signup({ ...formData, profileImage });
       navigate(`/verify?email=${encodeURIComponent(formData.email)}`);
     } catch (err) {
       console.error(err);
     }
   };
+
+  // Get initials for the placeholder avatar
+  const initials = formData.name
+    ? formData.name.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2)
+    : "?";
 
   return (
     <div className="auth-container animate-fade-in">
@@ -51,6 +67,34 @@ const Signup = () => {
         {error && <div className="auth-error">{error}</div>}
 
         <form onSubmit={handleSubmit} className="auth-form flex-col gap-4 mt-4">
+
+          {/* ── Avatar Picker ─────────────────────────────────────────── */}
+          <div className="avatar-picker-wrapper">
+            <button
+              type="button"
+              className="avatar-picker"
+              onClick={() => fileInputRef.current?.click()}
+              title="Choose profile photo"
+            >
+              {imagePreview ? (
+                <img src={imagePreview} alt="Preview" className="avatar-preview-img" />
+              ) : (
+                <span className="avatar-initials">{initials}</span>
+              )}
+              <span className="avatar-overlay">
+                <Camera size={20} />
+              </span>
+            </button>
+            <p className="avatar-hint">Photo (optional)</p>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              style={{ display: "none" }}
+              onChange={handleImageChange}
+            />
+          </div>
+
           <div className="input-group">
             <User className="input-icon" size={20} />
             <input

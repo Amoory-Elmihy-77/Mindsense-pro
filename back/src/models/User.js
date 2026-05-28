@@ -13,6 +13,10 @@ const userSchema = new mongoose.Schema({
     min: [8, "Age must be 8 or above"],
     max: [100, "Invalid age"],
   },
+  profileImage: {
+    type: String,
+    default: "",
+  },
   email: {
     type: String,
     required: [true, "Please enter your email"],
@@ -114,6 +118,24 @@ const userSchema = new mongoose.Schema({
         day: { type: Number, min: 0, max: 6 }, // 0 = Sunday, 1 = Monday, etc.
         start_time: { type: String }, // e.g., "09:00"
         end_time: { type: String }, // e.g., "17:00"
+      },
+    ],
+  },
+
+  // ── Gamification ──────────────────────────────────────────────────────────
+  gamification: {
+    xp:          { type: Number, default: 0 },
+    points:      { type: Number, default: 0 },
+    streak_days: { type: Number, default: 0 },
+    last_played: { type: Date,   default: null },
+    past_sessions: [
+      {
+        game_name:  { type: String },
+        game_type:  { type: String },
+        emotion:    { type: String },
+        score:      { type: Number, default: 0 },
+        xp_earned:  { type: Number, default: 0 },
+        date:       { type: Date, default: Date.now },
       },
     ],
   },

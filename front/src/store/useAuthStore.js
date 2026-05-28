@@ -11,7 +11,19 @@ const useAuthStore = create((set, get) => ({
   signup: async (userData) => {
     set({ isLoading: true, error: null });
     try {
-      const res = await api.post("/v1/users/signup", userData);
+      // Always send as FormData so multer can handle the optional image
+      const formData = new FormData();
+      Object.entries(userData).forEach(([key, value]) => {
+        if (key === "profileImage" && value instanceof File) {
+          formData.append("profileImage", value);
+        } else if (key !== "profileImage") {
+          formData.append(key, value);
+        }
+      });
+
+      const res = await api.post("/v1/users/signup", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
       set({ isLoading: false });
       return res.data;
     } catch (error) {

@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import useAuthStore from "./store/useAuthStore";
+import useGameStore from "./store/useGameStore";
 import Sidebar from "./components/Sidebar";
 import Topbar from "./components/Topbar";
 
@@ -53,12 +54,25 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
 
 function App() {
   const { getMe, isAuthenticated, user } = useAuthStore();
+  const { initForUser, clearSession } = useGameStore();
 
+  // Fetch the user profile whenever authentication state is established
   useEffect(() => {
     if (isAuthenticated) {
       getMe();
     }
   }, [getMe, isAuthenticated]);
+
+  // Sync the game store with the currently authenticated user.
+  // initForUser() is idempotent — it only re-hydrates when the userId changes.
+  useEffect(() => {
+    if (user?._id) {
+      initForUser(user._id);
+    } else {
+      // User logged out — wipe in-memory state (localStorage data is kept safe)
+      clearSession();
+    }
+  }, [user?._id, initForUser, clearSession]);
 
   return (
     <BrowserRouter>

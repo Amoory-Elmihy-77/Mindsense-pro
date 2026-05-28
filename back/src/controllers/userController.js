@@ -35,6 +35,11 @@ exports.updateMe = async (req, res) => {
 
     const filteredBody = filterObj(req.body, "name", "email", "age");
 
+    // If a new profile image was uploaded, add it to the update
+    if (req.file) {
+      filteredBody.profileImage = `/api/uploads/profiles/${req.file.filename}`;
+    }
+
     const updatedUser = await User.findByIdAndUpdate(
       req.user.id,
       filteredBody,

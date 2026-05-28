@@ -7,6 +7,11 @@ exports.signup = async (req, res) => {
   try {
     const { name, email, password, passwordConfirm, age, role } = req.body;
 
+    // Build profile image URL if a file was uploaded
+    const profileImage = req.file
+      ? `/api/uploads/profiles/${req.file.filename}`
+      : "";
+
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res
@@ -23,6 +28,7 @@ exports.signup = async (req, res) => {
       password,
       passwordConfirm,
       age,
+      profileImage,
       role: role === "professional" ? "professional" : "user",
       professionalProfile:
         role === "professional"
