@@ -132,7 +132,15 @@ async def analyze_voice(file: UploadFile = File(...)):
 async def get_advice(data: dict):
     try:
         mental_state = data.get("state", "Neutral").capitalize()
-        advice = get_intervention(mental_state)
+        goal = data.get("goal")
+        user_context = data.get("context")
+        language = data.get("language")
+        advice = get_intervention(
+            mental_state,
+            goal=goal,
+            user_context=user_context,
+            language=language,
+        )
         return {"status": "success", "advice": advice}
     except Exception as e:
         logger.error(f"❌ /get-advice error: {e}")

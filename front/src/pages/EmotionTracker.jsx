@@ -19,6 +19,7 @@ import { generateGame } from "../lib/gameEngine";
 import useEmotionStore from "../store/useEmotionStore";
 import useGameStore from "../store/useGameStore";
 import useAuthStore from "../store/useAuthStore";
+import InteractiveAdvice from "../components/InteractiveAdvice";
 
 // Helper to convert Web Audio API AudioBuffer to WAV format
 const audioBufferToWav = (buffer) => {
@@ -118,7 +119,6 @@ const EmotionTracker = () => {
 
   // Advice & Safety State
   const [advice, setAdvice] = useState(null);
-  const [fetchingAdvice, setFetchingAdvice] = useState(false);
   const [contactNotified, setContactNotified] = useState(false);
 
   // Camera state
@@ -185,7 +185,7 @@ const EmotionTracker = () => {
       const stream = await navigator.mediaDevices.getUserMedia({ video: true });
       setMediaStream(stream);
       setCameraActive(true);
-    } catch (err) {
+    } catch {
       setError("Camera access denied or unavailable.");
     }
   };
@@ -262,7 +262,7 @@ const EmotionTracker = () => {
 
       mediaRecorder.start();
       setIsRecording(true);
-    } catch (err) {
+    } catch {
       setError("Microphone access denied or unavailable.");
     }
   };
@@ -273,31 +273,6 @@ const EmotionTracker = () => {
       mediaRecorderRef.current.stream.getTracks().forEach((t) => t.stop());
       setIsRecording(false);
     }
-  };
-
-  const renderAdviceContent = (adv) => {
-    if (!adv) return null;
-    if (typeof adv === "string") return adv;
-
-    // Attempt to extract intelligent fields if it is an object
-    if (adv.items && Array.isArray(adv.items)) {
-      return (
-        <ul
-          style={{
-            paddingLeft: "1.5rem",
-            margin: 0,
-            display: "flex",
-            flexDirection: "column",
-            gap: "0.75rem",
-          }}
-        >
-          {adv.items.map((item, i) => (
-            <li key={i}>{item}</li>
-          ))}
-        </ul>
-      );
-    }
-    return JSON.stringify(adv, null, 2);
   };
 
   // --- Analysis ---
@@ -375,6 +350,13 @@ const EmotionTracker = () => {
 
   const cancelVideoCapture = () => {
     stopCamera();
+  };
+
+  const resetAnalysis = () => {
+    setResult(null);
+    setGameRec(null);
+    setAdvice(null);
+    setContactNotified(false);
   };
 
   return (
@@ -1025,72 +1007,15 @@ const EmotionTracker = () => {
             </div>
           )}
 
-          <div
-            className="glass-panel"
-            style={{
-              padding: "2rem",
-              border: "1px solid rgba(236, 72, 153, 0.3)",
-              position: "relative",
-              overflow: "hidden",
-            }}
-          >
-            <div
-              style={{
-                position: "absolute",
-                bottom: "-50px",
-                left: "-50px",
-                width: "200px",
-                height: "200px",
-                background: "var(--accent-secondary)",
-                filter: "blur(100px)",
-                opacity: "0.15",
-              }}
-            ></div>
-
-            <h2
-              style={{
-                fontSize: "1.5rem",
-                marginBottom: "1.5rem",
-                display: "flex",
-                alignItems: "center",
-                gap: "0.75rem",
-              }}
-            >
-              <div
-                style={{
-                  padding: "0.5rem",
-                  background: "rgba(236, 72, 153, 0.1)",
-                  borderRadius: "50%",
-                }}
-              >
-                <Brain color="var(--accent-secondary)" />
-              </div>
-              AI Recommendations & Advice
-            </h2>
-
-            {advice ? (
-              <div
-                dir="auto"
-                style={{
-                  lineHeight: "2.2",
-                  color: "var(--text-primary)",
-                  fontSize: "1.1rem",
-                  background: "rgba(0,0,0,0.3)",
-                  padding: "2rem",
-                  borderRadius: "var(--radius-md)",
-                  border: "1px solid rgba(255,255,255,0.05)",
-                  letterSpacing: "0.3px",
-                  fontWeight: "500",
-                }}
-              >
-                {renderAdviceContent(advice)}
-              </div>
-            ) : (
-              <p className="text-muted">
-                No specific advice generated for this session.
-              </p>
-            )}
-          </div>
+          <InteractiveAdvice
+            key={`${result?.emotion?._id || result?.emotion?.createdAt || result?.emotion?.state}-${advice ? "with-advice" : "fallback"}`}
+            advice={advice}
+            emotion={result?.emotion?.state}
+            confidence={result?.emotion?.confidence}
+            gameRec={gameRec}
+            onPlayGame={() => navigate("/games")}
+            onAnalyzeAgain={resetAnalysis}
+          />
 
           {/* ── Game Recommendation Panel ── */}
           {gameRec && (
@@ -1344,11 +1269,7 @@ const EmotionTracker = () => {
                   id="btn-analyze-again"
                   className="btn btn-secondary"
                   style={{ flex: 1, minWidth: "160px" }}
-                  onClick={() => {
-                    setResult(null);
-                    setGameRec(null);
-                    setAdvice(null);
-                  }}
+                  onClick={resetAnalysis}
                 >
                   <RefreshCcw size={18} /> Analyze Again
                 </button>

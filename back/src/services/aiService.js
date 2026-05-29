@@ -73,10 +73,24 @@ exports.detectAll = async (facePayload, voicePayload) => {
 };
 
 // ================= INTERVENTION =================
-exports.getIntervention = async (state) => {
-  const res = await axios.post(`${AI_BASE_URL}/get-advice`, {
+exports.getIntervention = async (state, options = {}) => {
+  const payload = {
     state,
-  });
+  };
+
+  if (options.goal) {
+    payload.goal = options.goal;
+  }
+
+  if (options.context) {
+    payload.context = options.context;
+  }
+
+  if (options.language) {
+    payload.language = options.language;
+  }
+
+  const res = await axios.post(`${AI_BASE_URL}/get-advice`, payload);
 
   return res.data;
 };

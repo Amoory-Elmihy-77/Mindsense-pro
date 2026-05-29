@@ -1,0 +1,319 @@
+.interactive-advice {
+  padding: 2rem;
+  border: 1px solid rgba(16, 185, 129, 0.28);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.interactive-advice__header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1.5rem;
+  align-items: flex-start;
+}
+
+.interactive-advice__eyebrow {
+  color: #6ee7b7;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0;
+  margin-bottom: 0.75rem;
+}
+
+.interactive-advice h2 {
+  font-size: 1.45rem;
+  margin: 0 0 0.5rem;
+}
+
+.interactive-advice p {
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.interactive-advice__state {
+  min-width: 160px;
+  background: rgba(0, 0, 0, 0.26);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-md);
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  text-transform: capitalize;
+}
+
+.interactive-advice__side {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  align-items: stretch;
+  min-width: 190px;
+}
+
+.interactive-advice__language {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: rgba(0, 0, 0, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-full);
+  padding: 0.35rem;
+}
+
+.interactive-advice__language svg {
+  color: #6ee7b7;
+  margin-inline: 0.35rem 0.15rem;
+  flex-shrink: 0;
+}
+
+.interactive-advice__language button {
+  flex: 1;
+  min-height: 30px;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-weight: 700;
+  padding: 0.35rem 0.55rem;
+}
+
+.interactive-advice__language button.is-active {
+  color: #ffffff;
+  background: rgba(16, 185, 129, 0.16);
+}
+
+.interactive-advice__state span,
+.interactive-advice__state small {
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+}
+
+.interactive-advice__state strong {
+  font-size: 1.2rem;
+}
+
+.interactive-advice__goal-row,
+.interactive-advice__tabs,
+.interactive-advice__actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.interactive-advice__goal,
+.interactive-advice__tabs button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-full);
+  min-height: 42px;
+  padding: 0.65rem 1rem;
+  cursor: pointer;
+  transition: var(--transition);
+  font-weight: 700;
+}
+
+.interactive-advice__goal.is-active,
+.interactive-advice__tabs button.is-active {
+  color: #ffffff;
+  background: rgba(16, 185, 129, 0.14);
+  border-color: rgba(16, 185, 129, 0.42);
+}
+
+.interactive-advice__tabs {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: var(--radius-full);
+  padding: 0.35rem;
+  width: fit-content;
+}
+
+.interactive-advice__tabs button {
+  min-height: 34px;
+  padding: 0.45rem 0.9rem;
+  border-color: transparent;
+  background: transparent;
+}
+
+.interactive-advice__body {
+  display: grid;
+  gap: 1rem;
+}
+
+.interactive-advice__focus,
+.interactive-advice__timer,
+.interactive-advice__explain {
+  background: rgba(0, 0, 0, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: var(--radius-md);
+  padding: 1rem;
+}
+
+.interactive-advice__focus,
+.interactive-advice__timer,
+.interactive-advice__explain {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.interactive-advice__focus svg,
+.interactive-advice__timer svg,
+.interactive-advice__explain svg {
+  color: #6ee7b7;
+  flex-shrink: 0;
+}
+
+.interactive-advice__focus span,
+.interactive-advice__timer span {
+  color: var(--text-secondary);
+  display: block;
+  font-size: 0.82rem;
+  margin-bottom: 0.15rem;
+}
+
+.interactive-advice__focus strong,
+.interactive-advice__timer strong {
+  color: var(--text-primary);
+}
+
+.interactive-advice__progress {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.interactive-advice__progress > div:first-child {
+  display: flex;
+  justify-content: space-between;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.interactive-advice__progress-track {
+  height: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.interactive-advice__progress-track span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #10b981, #3b82f6);
+  border-radius: inherit;
+  transition: width 0.3s ease;
+}
+
+.interactive-advice__steps {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.interactive-advice__step {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: var(--radius-md);
+  padding: 0.95rem 1rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  text-align: start;
+  line-height: 1.55;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.interactive-advice__step:hover {
+  border-color: rgba(16, 185, 129, 0.35);
+  background: rgba(16, 185, 129, 0.08);
+}
+
+.interactive-advice__step svg {
+  color: #6ee7b7;
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+}
+
+.interactive-advice[dir="rtl"] .interactive-advice__step svg,
+.interactive-advice[dir="rtl"] .interactive-advice__focus svg,
+.interactive-advice[dir="rtl"] .interactive-advice__timer svg,
+.interactive-advice[dir="rtl"] .interactive-advice__explain svg {
+  transform: scaleX(-1);
+}
+
+.interactive-advice__step.is-done span {
+  color: var(--text-secondary);
+  text-decoration: line-through;
+}
+
+.interactive-advice__explain {
+  align-items: flex-start;
+}
+
+.interactive-advice__explain strong {
+  display: block;
+  margin-bottom: 0.4rem;
+}
+
+.interactive-advice__explain p + p {
+  margin-top: 0.65rem;
+}
+
+.interactive-advice__timer {
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.interactive-advice__timer > div {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-right: auto;
+}
+
+.interactive-advice__timer .btn {
+  min-height: 42px;
+  padding: 0.65rem 1rem;
+}
+
+.interactive-advice__icon-btn {
+  width: 42px;
+  padding: 0;
+}
+
+.interactive-advice__actions .btn {
+  flex: 1;
+  min-width: 190px;
+}
+
+@media (max-width: 760px) {
+  .interactive-advice {
+    padding: 1.25rem;
+  }
+
+  .interactive-advice__header {
+    flex-direction: column;
+  }
+
+  .interactive-advice__state,
+  .interactive-advice__side,
+  .interactive-advice__tabs {
+    width: 100%;
+  }
+
+  .interactive-advice__tabs button {
+    flex: 1;
+  }
+}
