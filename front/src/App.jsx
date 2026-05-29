@@ -19,6 +19,7 @@ import Contacts from "./pages/Contacts";
 import Games from "./pages/Games";
 import FlutterDashboard from "./pages/FlutterDashboard";
 import VoiceCompanion from "./pages/VoiceCompanion";
+import Community from "./pages/Community";
 import ProfessionalMarketplace from "./pages/ProfessionalMarketplace";
 import ProfessionalDashboard from "./pages/ProfessionalDashboard";
 import MySessions from "./pages/MySessions";
@@ -135,6 +136,14 @@ function App() {
           element={
             <ProtectedRoute allowedRoles={["user", "admin"]}>
               <VoiceCompanion />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/community"
+          element={
+            <ProtectedRoute allowedRoles={["user", "premium", "admin", "community_moderator"]}>
+              <Community />
             </ProtectedRoute>
           }
         />

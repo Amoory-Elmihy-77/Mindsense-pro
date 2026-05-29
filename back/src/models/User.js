@@ -91,8 +91,36 @@ const userSchema = new mongoose.Schema({
   // --- Professional Support Marketplace Extension ---
   role: {
     type: String,
-    enum: ["user", "professional", "admin"],
+    enum: ["user", "premium", "professional", "community_moderator", "admin"],
     default: "user",
+  },
+  communityProfile: {
+    nickname: { type: String },
+    avatarSeed: { type: String },
+    defaultVisibility: {
+      type: String,
+      enum: ["public", "nickname", "anonymous"],
+      default: "nickname",
+    },
+    joinedCircles: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: "Circle",
+      },
+    ],
+    reputation: {
+      supportScore: { type: Number, default: 0 },
+      consistency: { type: Number, default: 0 },
+      contribution: { type: Number, default: 0 },
+      helpful: { type: Number, default: 0 },
+      trust: { type: Number, default: 50 },
+      level: { type: Number, default: 1 },
+    },
+    privacy: {
+      showProgress: { type: Boolean, default: true },
+      allowBuddyInvites: { type: Boolean, default: true },
+      shareCircleStats: { type: Boolean, default: false },
+    },
   },
   following: [
     {

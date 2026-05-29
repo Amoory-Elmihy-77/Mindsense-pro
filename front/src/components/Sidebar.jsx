@@ -15,6 +15,7 @@ import {
   Stethoscope,
   Store,
   CalendarDays,
+  Network,
 } from "lucide-react";
 import useAuthStore from "../store/useAuthStore";
 import "../styles/dashboard.css";
@@ -52,6 +53,11 @@ const Sidebar = () => {
             name: "Voice Companion",
             path: "/companion",
             icon: <Mic size={20} />,
+          },
+          {
+            name: "Community",
+            path: "/community",
+            icon: <Network size={20} />,
           },
           {
             name: "Professional Support",
