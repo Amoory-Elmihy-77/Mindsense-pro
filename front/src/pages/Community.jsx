@@ -48,8 +48,25 @@ function EmptyState({ title, body }) {
   );
 }
 
-function Avatar({ name = "MS", small = false }) {
-  return <div className={`avatar ${small ? "small" : ""}`}>{name.slice(0, 2).toUpperCase()}</div>;
+const getImageUrl = (path) => {
+  if (!path) return null;
+  if (path.startsWith("http")) return path;
+  return `${import.meta.env.VITE_API_BASE_URL?.replace("/api", "") || "http://localhost:5020"}${path}`;
+};
+
+function getAuthorImage(item) {
+  if (item?.visibility === "anonymous" || item?.displayAuthor?.mode === "anonymous") return null;
+  return getImageUrl(item?.displayAuthor?.profileImage || item?.author?.profileImage);
+}
+
+function Avatar({ name = "MS", image, small = false }) {
+  const initials = name.slice(0, 2).toUpperCase();
+
+  return (
+    <div className={`community-avatar ${small ? "small" : ""}`}>
+      {image ? <img src={image} alt={name} /> : initials}
+    </div>
+  );
 }
 
 function FeedComposer({ circles, onSubmit }) {
@@ -119,7 +136,7 @@ function PostDetail({ post, comments, commentDraft, setCommentDraft, store }) {
 
       <div className="detail-post">
         <div className="post-author">
-          <Avatar name={post.displayAuthor?.name || "MS"} />
+          <Avatar name={post.displayAuthor?.name || "MS"} image={getAuthorImage(post)} />
           <div>
             <strong>{post.displayAuthor?.name || "Community Member"}</strong>
             <p>{post.type.replace("_", " ")} · {post.visibility}</p>
@@ -158,7 +175,7 @@ function PostDetail({ post, comments, commentDraft, setCommentDraft, store }) {
         ) : (
           comments.map((item) => (
             <article className="comment-item" key={item._id}>
-              <Avatar name={item.displayAuthor?.name || "MS"} small />
+              <Avatar name={item.displayAuthor?.name || "MS"} image={getAuthorImage(item)} small />
               <div>
                 <div className="comment-head">
                   <strong>{item.displayAuthor?.name || "Community Member"}</strong>
@@ -189,7 +206,7 @@ function FeedTab({ feed, circles, store }) {
           <Card key={post._id} className={`post-card ${store.selectedPostId === post._id ? "selected" : ""}`}>
             <div className="post-head">
               <div className="post-author">
-                <Avatar name={post.displayAuthor?.name || "MS"} />
+                <Avatar name={post.displayAuthor?.name || "MS"} image={getAuthorImage(post)} />
                 <div>
                   <strong>{post.displayAuthor?.name || "Community Member"}</strong>
                   <p>{post.circle?.name || "Global"} · {post.type.replace("_", " ")}</p>

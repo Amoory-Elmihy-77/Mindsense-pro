@@ -57,7 +57,7 @@
 
 .community-card {
   padding: 1.25rem;
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
 }
 
 .stat-card {
@@ -208,6 +208,7 @@
 .post-card {
   position: relative;
   overflow: hidden;
+  padding: 1.35rem 1.55rem 1.25rem;
 }
 
 .post-card.selected {
@@ -224,7 +225,7 @@
   opacity: 0.7;
 }
 
-.avatar,
+.community-avatar,
 .circle-icon {
   display: inline-flex;
   align-items: center;
@@ -233,11 +234,20 @@
   height: 42px;
   flex: 0 0 42px;
   border-radius: 50%;
-  background: linear-gradient(135deg, rgba(20, 184, 166, 0.75), rgba(139, 92, 246, 0.65));
+  background: linear-gradient(135deg, rgba(45, 212, 191, 0.82), rgba(96, 165, 250, 0.58));
+  color: #071b1a;
   font-weight: 800;
+  overflow: hidden;
 }
 
-.avatar.small {
+.community-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.community-avatar.small {
   width: 34px;
   height: 34px;
   flex-basis: 34px;
@@ -245,9 +255,52 @@
 }
 
 .post-content {
-  line-height: 1.7;
-  margin: 1rem 0;
+  line-height: 1.65;
+  margin: 0.85rem 0 0.75rem;
   white-space: pre-wrap;
+}
+
+.post-card .post-head {
+  align-items: flex-start;
+}
+
+.post-card .post-author {
+  align-items: center;
+  justify-content: flex-start;
+  min-width: 0;
+}
+
+.post-author > div {
+  min-width: 0;
+}
+
+.post-author strong,
+.post-author p {
+  display: block;
+}
+
+.post-author p {
+  margin-top: 0.12rem;
+}
+
+.post-card .status-pill {
+  margin-top: 0.15rem;
+}
+
+.post-card .post-meta {
+  gap: 0.65rem;
+  margin-top: 0.1rem;
+}
+
+.post-card .post-actions {
+  gap: 0.55rem;
+  margin-top: 0.85rem;
+}
+
+.post-actions button {
+  min-height: 40px;
+  padding: 0.55rem 0.85rem;
+  font-weight: 700;
 }
 
 .review-note,

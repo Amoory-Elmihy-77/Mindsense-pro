@@ -143,9 +143,9 @@ function displayAuthorFor(user, visibility = "nickname") {
     return { name: "Anonymous Member", avatarSeed: "anonymous", mode: "anonymous" };
   }
   if (visibility === "public") {
-    return { name: user.name, avatarSeed: profile.seed, mode: "public" };
+    return { name: user.name, avatarSeed: profile.seed, profileImage: user.profileImage, mode: "public" };
   }
-  return { name: profile.nickname, avatarSeed: profile.seed, mode: "nickname" };
+  return { name: profile.nickname, avatarSeed: profile.seed, profileImage: user.profileImage, mode: "nickname" };
 }
 
 async function ensureSeedData() {
@@ -212,6 +212,7 @@ async function listFeed(user, filters = {}) {
   return CommunityPost.find(query)
     .sort(sort)
     .limit(Math.min(Number(filters.limit) || 30, 100))
+    .populate("author", "name profileImage")
     .populate("circle", "name slug")
     .lean();
 }
@@ -340,7 +341,10 @@ async function addComment(user, postId, payload) {
 }
 
 async function listComments(postId) {
-  return CommunityComment.find({ post: postId, status: "published" }).sort({ createdAt: 1 }).lean();
+  return CommunityComment.find({ post: postId, status: "published" })
+    .sort({ createdAt: 1 })
+    .populate("author", "name profileImage")
+    .lean();
 }
 
 async function reportTarget(user, payload) {

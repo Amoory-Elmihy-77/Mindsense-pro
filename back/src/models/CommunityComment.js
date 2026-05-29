@@ -12,6 +12,7 @@ const communityCommentSchema = new mongoose.Schema({
   displayAuthor: {
     name: String,
     avatarSeed: String,
+    profileImage: String,
     mode: String,
   },
   status: {

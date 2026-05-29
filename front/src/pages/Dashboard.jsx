@@ -6,7 +6,7 @@ import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip as RechartsToolti
 import api from '../lib/axios';
 import '../styles/dashboard.css';
 
-const COLORS = ['#8b5cf6', '#ec4899', '#10b981', '#f59e0b', '#3b82f6', '#f43f5e', '#6366f1'];
+const COLORS = ['#2dd4bf', '#6ee7b7', '#60a5fa', '#f59e0b', '#10b981', '#fb7185', '#818cf8'];
 
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
@@ -58,7 +58,7 @@ const Dashboard = () => {
                finalAdvice = data.advice || data.message || data.recommendations || data;
              }
              setAdvice(finalAdvice);
-           } catch (e) {
+           } catch {
              setAdvice("Keep up your daily reflections to receive personalized recommendations.");
            }
         } else {
@@ -122,7 +122,7 @@ const Dashboard = () => {
             <div className="glass-panel" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               <div className="flex justify-between items-center">
                 <h3 style={{ color: 'var(--text-secondary)' }}>Current State</h3>
-                <div style={{ padding: '0.5rem', background: 'rgba(99, 102, 241, 0.1)', borderRadius: '50%', color: 'var(--accent-primary)' }}>
+                <div style={{ padding: '0.5rem', background: 'rgba(45, 212, 191, 0.12)', borderRadius: 'var(--radius-md)', color: 'var(--accent-primary)' }}>
                   <Smile size={24} />
                 </div>
               </div>
@@ -141,7 +141,7 @@ const Dashboard = () => {
             <div className="glass-panel" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               <div className="flex justify-between items-center">
                 <h3 style={{ color: 'var(--text-secondary)' }}>Total Scans</h3>
-                <div style={{ padding: '0.5rem', background: 'rgba(236, 72, 153, 0.1)', borderRadius: '50%', color: 'var(--accent-secondary)' }}>
+                <div style={{ padding: '0.5rem', background: 'rgba(110, 231, 183, 0.12)', borderRadius: 'var(--radius-md)', color: 'var(--accent-secondary)' }}>
                   <Activity size={24} />
                 </div>
               </div>
@@ -197,7 +197,7 @@ const Dashboard = () => {
               <Brain size={24} color="var(--accent-primary)" />
               <h2 style={{ fontSize: '1.25rem', fontWeight: '600' }}>AI Intervention Advice</h2>
             </div>
-            <div dir="auto" style={{ padding: '1.5rem', background: 'rgba(0, 0, 0, 0.2)', borderRadius: 'var(--radius-md)', border: '1px solid rgba(255,255,255,0.05)' }}>
+            <div dir="auto" style={{ padding: '1.5rem', background: 'rgba(15, 23, 42, 0.35)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
               <div style={{ lineHeight: '1.8', color: 'var(--text-primary)', fontSize: '1.05rem' }}>
                 {renderAdviceContent(advice)}
               </div>

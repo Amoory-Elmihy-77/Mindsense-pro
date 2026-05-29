@@ -17,6 +17,7 @@ const communityPostSchema = new mongoose.Schema({
   displayAuthor: {
     name: String,
     avatarSeed: String,
+    profileImage: String,
     mode: { type: String, enum: ["public", "nickname", "anonymous"], default: "nickname" },
   },
   status: {

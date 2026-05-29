@@ -1,0 +1,162 @@
+.flutter-dashboard-shell {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.flutter-phone-frame {
+  width: min(100%, 430px);
+  min-height: calc(100vh - 8rem);
+  padding: 1.5rem;
+  color: var(--text-primary);
+  background:
+    linear-gradient(180deg, rgba(28, 36, 52, 0.98), rgba(18, 21, 34, 0.98)),
+    var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+}
+
+.flutter-mobile-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  margin-bottom: 2rem;
+}
+
+.flutter-mobile-header h1 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.flutter-icon-button {
+  position: absolute;
+  left: 0;
+  width: 42px;
+  height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-primary);
+  background: rgba(148, 163, 184, 0.08);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+}
+
+.flutter-filter-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.flutter-legend {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.flutter-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.legend-dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.legend-face {
+  background: var(--accent-secondary);
+}
+
+.legend-voice {
+  background: var(--accent-ink);
+}
+
+.flutter-select {
+  min-height: 36px;
+  padding: 0.35rem 0.6rem;
+  color: var(--text-primary);
+  background: rgba(15, 23, 42, 0.4);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+}
+
+.flutter-chart-card {
+  width: 100%;
+  height: 300px;
+  min-width: 0;
+  margin-bottom: 1.5rem;
+}
+
+.flutter-overview-card {
+  padding: 1.25rem;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+}
+
+.flutter-overview-heading {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  margin-bottom: 0.9rem;
+}
+
+.flutter-overview-icon {
+  width: 42px;
+  height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent-primary);
+  background: rgba(45, 212, 191, 0.12);
+  border-radius: var(--radius-md);
+}
+
+.flutter-overview-card h2 {
+  margin: 0;
+  font-size: 1.08rem;
+  font-weight: 700;
+}
+
+.flutter-overview-card p {
+  margin: 0;
+  color: #e2e8f0;
+  line-height: 1.65;
+  font-size: 0.95rem;
+}
+
+.flutter-state {
+  display: flex;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+}
+
+.flutter-state-error {
+  color: var(--error);
+}
+
+@media (max-width: 560px) {
+  .flutter-phone-frame {
+    min-height: auto;
+    padding: 1.25rem;
+  }
+
+  .flutter-filter-row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
