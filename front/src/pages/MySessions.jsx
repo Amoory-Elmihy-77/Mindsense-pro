@@ -29,16 +29,6 @@ const MySessions = () => {
     }
   };
 
-  const handlePay = async (id) => {
-    try {
-      await api.post(`/v1/sessions/pay`, { sessionId: id });
-      setAlert({ isOpen: true, title: "Success", message: "Paid successfully!", type: "success" });
-      fetchSessions();
-    } catch (err) {
-      setAlert({ isOpen: true, title: "Payment Failed", message: err.response?.data?.message || "Payment could not be completed.", type: "error" });
-    }
-  };
-
   const handleRateSubmit = async ({ rating, comment }) => {
     if (!ratingModal.sessionId) return;
     setIsSubmittingRating(true);
@@ -82,14 +72,20 @@ const MySessions = () => {
           <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
             {activeSessions.map((session) => (
               <SessionCard key={session._id} session={session} title={`Dr. ${session.professional?.name || "Unknown"}`}>
+                {session.status === "pending" && (
+                  <span className="text-muted" style={{ fontSize: "0.9rem" }}>
+                    Payment proof under review
+                  </span>
+                )}
                 {session.status === "accepted" && (
-                  <button
-                    onClick={() => handlePay(session._id)}
-                    className="btn btn-primary"
-                    style={{ padding: "0.4rem 1rem", boxShadow: "0 10px 15px -3px rgba(59, 130, 246, 0.3)" }}
-                  >
-                    Pay Now
-                  </button>
+                  <span style={{ color: "var(--success)", fontWeight: "600", fontSize: "0.9rem" }}>
+                    Payment verified
+                  </span>
+                )}
+                {session.status === "paid" && (
+                  <span style={{ color: "var(--success)", fontWeight: "600", fontSize: "0.9rem" }}>
+                    Payment verified
+                  </span>
                 )}
               </SessionCard>
             ))}

@@ -5,7 +5,7 @@ const paymentService = require("./paymentService");
 const sendEmail = require("../utils/email");
 
 class SessionService {
-  async bookSession(userId, professionalId, startTime, endTime) {
+  async bookSession(userId, professionalId, startTime, endTime, paymentDetails = {}) {
     const professional = await User.findById(professionalId);
     if (
       !professional ||
@@ -16,6 +16,9 @@ class SessionService {
     }
 
     const price = professional.professionalProfile.price_per_session || 0;
+    if (!paymentDetails.method || !paymentDetails.proofImage) {
+      throw new Error("Please upload a payment transfer screenshot before booking");
+    }
 
     const newSession = await SessionBooking.create({
       user: userId,
@@ -23,6 +26,9 @@ class SessionService {
       price: price,
       start_time: startTime,
       end_time: endTime,
+      payment_method: paymentDetails.method,
+      payment_proof_image: paymentDetails.proofImage,
+      payment_reference: paymentDetails.reference,
       status: "pending", // waits for professional to accept
     });
 
@@ -88,14 +94,14 @@ class SessionService {
     session.meeting_url = meeting.url;
     // session.meeting_id = meeting.meeting_id; // (if used)
 
-    session.status = "accepted";
+    session.status = "paid";
     await session.save();
 
     try {
       await sendEmail({
         email: session.user.email,
         subject: "Session Request Accepted - MindSense",
-        message: `Hello ${session.user.name},\n\nDr. ${session.professional.name} has accepted your meeting request.\nStatus: Accepted\n\nPlease log in to your MindSense App, visit 'My Appointments', and complete the payment to proceed to the meeting.\nGoogle Meet Link: ${session.meeting_url}\n\nBest regards,\nMindSense Team`,
+        message: `Hello ${session.user.name},\n\nDr. ${session.professional.name} has reviewed your payment proof and accepted your meeting request.\nStatus: Paid\n\nPlease log in to your MindSense App and visit 'My Appointments' to join your session.\nGoogle Meet Link: ${session.meeting_url}\n\nBest regards,\nMindSense Team`,
       });
     } catch (err) {
       console.log(

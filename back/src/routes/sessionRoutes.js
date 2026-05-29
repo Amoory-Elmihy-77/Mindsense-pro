@@ -2,12 +2,14 @@ const express = require("express");
 const router = express.Router();
 const sessionController = require("../controllers/sessionController");
 const authMiddleware = require("../middlewares/authMiddleware");
+const paymentProofUpload = require("../middlewares/paymentProofUploadMiddleware");
 
 router.use(authMiddleware.protect);
 
 router.post(
   "/book",
   authMiddleware.restrictTo("user"),
+  paymentProofUpload.single("paymentProof"),
   sessionController.bookSession,
 );
 router.post(

@@ -31,6 +31,17 @@ const sessionBookingSchema = new mongoose.Schema({
   meeting_url: {
     type: String,
   },
+  payment_method: {
+    type: String,
+    enum: ["cash_transfer", "instapay"],
+  },
+  payment_proof_image: {
+    type: String,
+  },
+  payment_reference: {
+    type: String,
+    trim: true,
+  },
   start_time: {
     type: Date,
     required: [true, "Session must have a start time"],

@@ -4,6 +4,17 @@ import api from "../lib/axios";
 import SessionCard from "../components/SessionCard";
 import AlertModal from "../components/AlertModal";
 
+const getImageUrl = (path) => {
+  if (!path) return null;
+  if (path.startsWith("http")) return path;
+  return `${import.meta.env.VITE_API_BASE_URL?.replace("/api", "") || "http://localhost:5020"}${path}`;
+};
+
+const paymentMethodLabel = {
+  cash_transfer: "Cash wallet",
+  instapay: "InstaPay",
+};
+
 const ProfessionalDashboard = () => {
   const { user } = useAuthStore();
   const [sessions, setSessions] = useState([]);
@@ -108,6 +119,48 @@ const ProfessionalDashboard = () => {
                 
                 {session.status === "pending" && (
                   <>
+                    {session.payment_proof_image && (
+                      <a
+                        href={getImageUrl(session.payment_proof_image)}
+                        target="_blank"
+                        rel="noreferrer"
+                        title="Open payment proof"
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "0.65rem",
+                          padding: "0.45rem 0.7rem",
+                          border: "1px solid rgba(255,255,255,0.14)",
+                          borderRadius: "var(--radius-md)",
+                          background: "rgba(0,0,0,0.22)",
+                          color: "var(--text-primary)",
+                          textDecoration: "none",
+                        }}
+                      >
+                        <img
+                          src={getImageUrl(session.payment_proof_image)}
+                          alt="Payment proof"
+                          style={{
+                            width: "52px",
+                            height: "52px",
+                            objectFit: "cover",
+                            borderRadius: "var(--radius-sm)",
+                            border: "1px solid rgba(255,255,255,0.16)",
+                          }}
+                        />
+                        <span style={{ display: "flex", flexDirection: "column", lineHeight: 1.2 }}>
+                          <strong style={{ fontSize: "0.85rem" }}>Payment proof</strong>
+                          <span className="text-muted" style={{ fontSize: "0.75rem" }}>
+                            {paymentMethodLabel[session.payment_method] || "Transfer"}
+                          </span>
+                          {session.payment_reference && (
+                            <span className="text-muted" style={{ fontSize: "0.75rem" }}>
+                              Ref: {session.payment_reference}
+                            </span>
+                          )}
+                        </span>
+                      </a>
+                    )}
                     <button
                       onClick={() => handleAction(session._id, "accept")}
                       className="btn btn-primary"

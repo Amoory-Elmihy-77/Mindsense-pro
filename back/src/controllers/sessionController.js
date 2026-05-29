@@ -2,12 +2,20 @@ const sessionService = require("../services/sessionService");
 
 exports.bookSession = async (req, res) => {
   try {
-    const { professionalId, start_time, end_time } = req.body;
+    const { professionalId, start_time, end_time, payment_method, payment_reference } = req.body;
+    const paymentProofImage = req.file
+      ? `/api/uploads/payment-proofs/${req.file.filename}`
+      : null;
     const session = await sessionService.bookSession(
       req.user.id,
       professionalId,
       start_time,
       end_time,
+      {
+        method: payment_method,
+        reference: payment_reference,
+        proofImage: paymentProofImage,
+      },
     );
     res.status(201).json({ status: "success", data: { session } });
   } catch (err) {
