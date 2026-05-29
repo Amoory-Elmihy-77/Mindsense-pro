@@ -25,7 +25,6 @@ const circleSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now },
 });
 
-circleSchema.index({ slug: 1 });
 circleSchema.index({ tags: 1, memberCount: -1 });
 
 module.exports = mongoose.model("Circle", circleSchema);

@@ -17,7 +17,6 @@ const reflectionRoomSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now },
 });
 
-reflectionRoomSchema.index({ slug: 1 });
 reflectionRoomSchema.index({ type: 1, activeCount: -1 });
 
 module.exports = mongoose.model("ReflectionRoom", reflectionRoomSchema);
