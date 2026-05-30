@@ -33,7 +33,7 @@ const Login = () => {
 
         {error && <div className="auth-error">{error}</div>}
 
-        <form onSubmit={handleSubmit} className="auth-form flex-col gap-4 mt-4">
+        <form onSubmit={handleSubmit} className="auth-form">
           <div className="input-group">
             <Mail className="input-icon" size={20} />
             <input 
@@ -60,7 +60,7 @@ const Login = () => {
             />
           </div>
 
-          <div className="flex justify-between items-center text-sm">
+          <div className="auth-options flex justify-between items-center text-sm">
             <label className="flex items-center gap-2 cursor-pointer">
               <input type="checkbox" className="custom-checkbox" />
               <span>Remember me</span>
@@ -68,7 +68,7 @@ const Login = () => {
             <Link to="/forgot-password" className="forgot-link">Forgot Password?</Link>
           </div>
 
-          <button type="submit" className="btn btn-primary w-full mt-4" disabled={isLoading}>
+          <button type="submit" className="btn btn-primary w-full auth-submit" disabled={isLoading}>
             {isLoading ? 'Logging in...' : (
               <>
                 Sign In <ArrowRight size={18} />
@@ -77,7 +77,7 @@ const Login = () => {
           </button>
         </form>
 
-        <p className="text-center text-sm text-muted mt-4">
+        <p className="auth-footer text-center text-sm text-muted">
           Don't have an account? <Link to="/signup" className="auth-link">Sign up</Link>
         </p>
       </div>

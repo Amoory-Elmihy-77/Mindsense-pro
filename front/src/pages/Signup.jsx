@@ -1,7 +1,15 @@
 import React, { useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import useAuthStore from "../store/useAuthStore";
-import { Mail, Lock, User, ArrowRight, Brain, Calendar, Camera } from "lucide-react";
+import {
+  Mail,
+  Lock,
+  User,
+  ArrowRight,
+  Brain,
+  Calendar,
+  Camera,
+} from "lucide-react";
 import "../styles/auth.css";
 
 const Signup = () => {
@@ -13,8 +21,8 @@ const Signup = () => {
     age: "",
     role: "user",
   });
-  const [profileImage, setProfileImage] = useState(null);       // File object
-  const [imagePreview, setImagePreview] = useState(null);       // Object URL for preview
+  const [profileImage, setProfileImage] = useState(null); // File object
+  const [imagePreview, setImagePreview] = useState(null); // Object URL for preview
   const fileInputRef = useRef(null);
 
   const { signup, isLoading, error } = useAuthStore();
@@ -50,7 +58,12 @@ const Signup = () => {
 
   // Get initials for the placeholder avatar
   const initials = formData.name
-    ? formData.name.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2)
+    ? formData.name
+        .split(" ")
+        .map((n) => n[0])
+        .join("")
+        .toUpperCase()
+        .slice(0, 2)
     : "?";
 
   return (
@@ -66,8 +79,7 @@ const Signup = () => {
 
         {error && <div className="auth-error">{error}</div>}
 
-        <form onSubmit={handleSubmit} className="auth-form flex-col gap-4 mt-4">
-
+        <form onSubmit={handleSubmit} className="auth-form signup-form">
           {/* ── Avatar Picker ─────────────────────────────────────────── */}
           <div className="avatar-picker-wrapper">
             <button
@@ -77,7 +89,11 @@ const Signup = () => {
               title="Choose profile photo"
             >
               {imagePreview ? (
-                <img src={imagePreview} alt="Preview" className="avatar-preview-img" />
+                <img
+                  src={imagePreview}
+                  alt="Preview"
+                  className="avatar-preview-img"
+                />
               ) : (
                 <span className="avatar-initials">{initials}</span>
               )}
@@ -161,25 +177,22 @@ const Signup = () => {
             />
           </div>
 
-          <div className="flex items-center gap-2 mt-2 px-1">
+          <div className="role-toggle">
             <input
               type="checkbox"
               id="professionalRole"
               checked={formData.role === "professional"}
               onChange={handleChange}
-              className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+              className="custom-checkbox"
             />
-            <label
-              htmlFor="professionalRole"
-              className="text-sm font-medium text-gray-700"
-            >
+            <label htmlFor="professionalRole">
               Sign up as a Professional/Doctor
             </label>
           </div>
 
           <button
             type="submit"
-            className="btn btn-primary w-full mt-4"
+            className="btn btn-primary w-full auth-submit"
             disabled={isLoading}
           >
             {isLoading ? (
@@ -192,7 +205,7 @@ const Signup = () => {
           </button>
         </form>
 
-        <p className="text-center text-sm text-muted mt-4">
+        <p className="auth-footer text-center text-sm text-muted">
           Already have an account?{" "}
           <Link to="/login" className="auth-link">
             Log in
